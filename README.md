@@ -1,4 +1,4 @@
-# HW_Web_13 (First part - FastAPI) User's email verification + password reset + Redis cash
+# HW_Web_13 (First part - FastAPI) User's email verification + Redis cash
 In this homework, we continue to refine the REST API application from homework 12.
 
 # Implemented required tasks:
