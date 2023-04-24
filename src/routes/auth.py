@@ -4,8 +4,8 @@ from sqlalchemy.orm import Session
 
 from src.database.db import get_db
 from src.repository import users as repository_users
-from src.schemas import UserModel, UserResponse, TokenModel, RequestEmail
-from src.services.auth import auth_service
+from src.schemas import UserModel, UserResponse, TokenModel, RequestEmail, ResetPassword
+from src.services.auth import auth_service, auth_password
 from src.services.email import send_email
 
 router = APIRouter(prefix="/api/auth", tags=['auth'])
@@ -78,3 +78,42 @@ async def request_email(body: RequestEmail, background_tasks: BackgroundTasks, r
         background_tasks.add_task(send_email, user.email, user.username, request.base_url,
                                   payload={"subject": "Confirm your email", "template_name": "email_template.html"})
     return {"message": "Check your email for confirmation."}
+
+
+@router.post('/reset_password')
+async def request_email(body: RequestEmail, background_tasks: BackgroundTasks, request: Request,
+                        db: Session = Depends(get_db)):
+    user = await repository_users.get_user_by_email(body.email, db)
+    if user:
+        background_tasks.add_task(send_email, user.email, user.username, request.base_url,
+                                  payload={"subject": "Confirmation", "template_name": "reset_password.html"})
+        return {"message": "Check your email for the next step."}
+    return {"message": "Your email is incorrect"}
+
+
+@router.get('/password_reset_confirm/{token}')
+async def password_reset_confirm(token: str, db: Session = Depends(get_db)):
+    email = auth_service.get_email_from_token(token)
+    user = await repository_users.get_user_by_email(email, db)
+    reset_password_token = auth_service.create_email_token(data={"sub": user.email})
+    await repository_users.update_reset_token(user, reset_password_token, db)
+    return {'reset_password_token': reset_password_token}
+
+
+@router.post('/set_new_password')
+async def update_password(request: ResetPassword, db: Session = Depends(get_db)):
+    token = request.reset_password_token
+    email = auth_service.get_email_from_token(token)
+    user = await repository_users.get_user_by_email(email, db)
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Verification error")
+    check_token = user.password_reset_token
+    if check_token != token:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid reset token")
+    if request.new_password != request.confirm_password:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="passwords do not match")
+
+    new_password = auth_password.get_hash_password(request.new_password)
+    await repository_users.update_password(user, new_password, db)
+    await repository_users.update_reset_token(user, None, db)
+    return {"message": "Password successfully updated"}

@@ -1,5 +1,5 @@
-from sqlalchemy.orm import Session
 from sqlalchemy import and_
+from sqlalchemy.orm import Session
 
 from src.database.models import Contact, User
 from src.schemas import ContactModel, ContactFavoriteModel
@@ -11,7 +11,7 @@ async def get_contacts(user: User, limit: int, offset: int, db: Session):
 
 
 async def get_contact_by_id(user: User, contact_id: int, db: Session):
-    contact = db.query(Contact).filter(and_(Contact.user_id == user.id, Contact.id==contact_id)).first()
+    contact = db.query(Contact).filter(and_(Contact.user_id == user.id, Contact.id == contact_id)).first()
     return contact
 
 

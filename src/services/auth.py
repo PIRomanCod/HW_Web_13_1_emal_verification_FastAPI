@@ -4,7 +4,7 @@ from typing import Optional
 
 import redis as redis
 from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer  # Bearer token
+from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
@@ -107,4 +107,15 @@ class Auth:
                                 detail="Invalid token for email verification")
 
 
+class AuthPassword:
+    pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
+
+    def get_hash_password(self, password: str):
+        return self.pwd_context.hash(password)
+
+    def verify_password(self, password: str, hashed_password: str):
+        return self.pwd_context.verify(password, hashed_password)
+
+
 auth_service = Auth()
+auth_password = AuthPassword()

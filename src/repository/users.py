@@ -35,3 +35,13 @@ async def update_avatar(email, url: str, db: Session) -> User:
     user.avatar = url
     db.commit()
     return user
+
+
+async def update_password(user: User, new_password: str, db: Session) -> None:
+    user.password = new_password
+    db.commit()
+
+
+async def update_reset_token(user: User, reset_token, db: Session) -> None:
+    user.password_reset_token = reset_token
+    db.commit()

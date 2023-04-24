@@ -47,6 +47,8 @@ class UserResponse(BaseModel):
     email: str
     avatar: str
     roles: Role
+    created_at: datetime.datetime | None
+    updated_at: datetime.datetime | None
 
     class Config:
         orm_mode = True
@@ -60,3 +62,13 @@ class TokenModel(BaseModel):
 
 class RequestEmail(BaseModel):
     email: EmailStr
+
+
+class UserInDB(UserModel):
+    hashed_password: str
+
+
+class ResetPassword(BaseModel):
+    reset_password_token: str
+    new_password: str
+    confirm_password: str
