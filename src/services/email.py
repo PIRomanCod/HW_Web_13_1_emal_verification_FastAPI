@@ -24,6 +24,21 @@ conf = ConnectionConfig(
 
 
 async def send_email(email: EmailStr, username: str, host: str, payload: dict):
+    """
+    The send_email function is used to send email to a user.
+        It takes in the following parameters:
+        - email: The recipient's email address.
+        - username: The recipient's username. This will be used for personalization purpose in the template body of the message being sent out.
+        - host: The hostname of where this service is running on (e.g., http://localhost).
+        This will be used for personalization purposes in the template body of the message being sent out, as well as for generating a link that can be clicked by users to verify their emails and complete registration/password reset processes
+
+    :param email: EmailStr: Validate the email address
+    :param username: str: Pass the username of the user who is trying to register
+    :param host: str: Create a link to the website in the email
+    :param payload: dict: Pass the subject and template_name to the send_email function
+    :return: A coroutine
+    :doc-author: Trelent
+    """
     try:
         token_verification = auth_service.create_email_token({"sub": email})
         message = MessageSchema(
@@ -36,5 +51,3 @@ async def send_email(email: EmailStr, username: str, host: str, payload: dict):
         await fm.send_message(message, template_name=payload["template_name"])
     except ConnectionErrors as err:
         print(err)
-
-

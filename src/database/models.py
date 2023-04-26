@@ -30,12 +30,34 @@ class Contact(Base):
 
 @event.listens_for(Contact, 'before_insert')
 def updated_favorite(mapper, conn, target):
+    """
+    The updated_favorite function is a listener that will be called whenever the firstname attribute of an instance
+    of the FavoritePerson class is updated. If the new value for firstname starts with 'My', then it sets
+    is_favorite to True.
+
+    :param mapper: Access the mapper object
+    :param conn: Access the database connection
+    :param target: Access the object being updated
+    :return: The target object
+    :doc-author: Trelent
+    """
     if target.firstname.startswith('My'):
         target.is_favorite = True
 
 
 @event.listens_for(Contact, 'before_update')
 def updated_favorite(mapper, conn, target):
+    """
+    The updated_favorite function is a listener that will be called whenever the firstname attribute of an instance
+    of the FavoritePerson class is updated. If the new value for firstname starts with 'My', then it sets
+    is_favorite to True.
+
+    :param mapper: Access the mapper object
+    :param conn: Access the database connection
+    :param target: Identify the object that is being updated
+    :return: The target object
+    :doc-author: Trelent
+    """
     if target.firstname.startswith('My'):
         target.is_favorite = True
 
