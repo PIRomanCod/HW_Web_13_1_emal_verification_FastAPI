@@ -61,9 +61,6 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 
-# DB Data:
-.postgress-data/
-
 # Flask stuff:
 instance/
 .webassets-cache

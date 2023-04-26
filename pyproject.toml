@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "hw-web-14-FastAPI-testing"
+name = "hw-web-13-fastapi"
 version = "0.1.0"
 description = ""
 authors = ["PIRomanCod <111997187+PIRomanCod@users.noreply.github.com>"]
@@ -21,18 +21,13 @@ libgravatar = "^1.0.4"
 passlib = {extras = ["bcrypt"], version = "^1.7.4"}
 python-multipart = "^0.0.6"
 fastapi-mail = "^1.2.7"
-redis = {extras = ["asyncio"], version = "^4.5.4"}
+redis = "^4.5.4"
 fastapi-limiter = "^0.1.5"
 asyncio = "^3.4.3"
 python-dotenv = "^1.0.0"
 aioredis = "^2.0.1"
 cloudinary = "^1.32.0"
-sphinx = "^6.2.0"
-sphinxcontrib-bibtex = "^2.5.0"
 
-
-[tool.poetry.group.dev.dependencies]
-sphinx = "^6.2.0"
 
 [build-system]
 requires = ["poetry-core"]

@@ -23,17 +23,6 @@ allowed_operation_remove = RoleAccess([Role.admin])  # noqa
             dependencies=[Depends(allowed_operation_get), Depends(RateLimiter(times=10, seconds=60))])
 async def get_contacts(limit: int = Query(10, le=500), offset: int = 0, db: Session = Depends(get_db),
                        current_user: User = Depends(auth_service.get_current_user)):
-    """
-    The get_contacts function returns a list of contacts.
-
-    :param limit: int: Limit the number of contacts returned
-    :param le: Limit the number of contacts returned to 500
-    :param offset: int: Specify the offset of the first contact to return
-    :param db: Session: Pass the database session to the function
-    :param current_user: User: Get the current user from the database
-    :return: A list of contacts
-    :doc-author: Trelent
-    """
     contacts = await repository_contacts.get_contacts(current_user, limit, offset, db)
     return contacts
 
@@ -41,17 +30,6 @@ async def get_contacts(limit: int = Query(10, le=500), offset: int = 0, db: Sess
 @router.get("/{contact_id}", response_model=ContactResponse, dependencies=[Depends(allowed_operation_get)])
 async def get_contact(contact_id: int = Path(ge=1), db: Session = Depends(get_db),
                       current_user: User = Depends(auth_service.get_current_user)):
-    """
-    The get_contact function is a GET request that returns the contact with the given ID.
-    The function takes in an optional contact_id parameter, which defaults to 1 if not provided.
-    It also takes in a db Session object and current_user User object as parameters, both of which are injected by FastAPI.
-
-    :param contact_id: int: Get the contact id from the path
-    :param db: Session: Get a database session
-    :param current_user: User: Get the current user
-    :return: A contact object
-    :doc-author: Trelent
-    """
     contact = await repository_contacts.get_contact_by_id(current_user, contact_id, db)
     if contact is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not Found")
@@ -62,15 +40,6 @@ async def get_contact(contact_id: int = Path(ge=1), db: Session = Depends(get_db
              dependencies=[Depends(allowed_operation_create)])
 async def create_contact(body: ContactModel, db: Session = Depends(get_db),
                          current_user: User = Depends(auth_service.get_current_user)):
-    """
-    The create_contact function creates a new contact in the database.
-
-    :param body: ContactModel: Define the data model used for the request body
-    :param db: Session: Get the database session
-    :param current_user: User: Get the current user from the database
-    :return: A contactmodel object
-    :doc-author: Trelent
-    """
     contact = await repository_contacts.create(current_user, body, db)
     return contact
 
@@ -79,18 +48,6 @@ async def create_contact(body: ContactModel, db: Session = Depends(get_db),
             description='Only moderators and admin')
 async def update_contact(body: ContactModel, contact_id: int = Path(ge=1), db: Session = Depends(get_db),
                          current_user: User = Depends(auth_service.get_current_user)):
-    """
-    The update_contact function updates a contact in the database.
-        The function takes an id and a body as input, and returns the updated contact.
-        If no such contact exists, it raises an HTTPException with status code 404.
-
-    :param body: ContactModel: Specify the type of data that will be passed to the function
-    :param contact_id: int: Get the id of the contact to be deleted
-    :param db: Session: Pass the database session to the function
-    :param current_user: User: Get the user that is currently logged in
-    :return: A contactmodel object
-    :doc-author: Trelent
-    """
     contact = await repository_contacts.update(current_user, contact_id, body, db)
     if contact is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not Found")
@@ -101,15 +58,6 @@ async def update_contact(body: ContactModel, contact_id: int = Path(ge=1), db: S
                dependencies=[Depends(allowed_operation_remove)])
 async def remove_contact(contact_id: int = Path(ge=1), db: Session = Depends(get_db),
                          current_user: User = Depends(auth_service.get_current_user)):
-    """
-    The remove_contact function removes a contact from the database.
-
-    :param contact_id: int: Specify the contact_id of the contact to be removed
-    :param db: Session: Pass the database session to the repository
-    :param current_user: User: Get the current user from the database
-    :return: The contact that was removed
-    :doc-author: Trelent
-    """
     contact = await repository_contacts.remove(current_user, contact_id, db)
     if contact is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not Found")
@@ -120,20 +68,6 @@ async def remove_contact(contact_id: int = Path(ge=1), db: Session = Depends(get
               dependencies=[Depends(allowed_operation_update)])
 async def favorite_contact(body: ContactFavoriteModel, contact_id: int = Path(ge=1), db: Session = Depends(get_db),
                            current_user: User = Depends(auth_service.get_current_user)):
-    """
-    The favorite_contact function is used to set a contact as favorite or not.
-        The function takes the following parameters:
-            body (ContactFavoriteModel): A ContactFavoriteModel object containing the new favorite status of the contact.
-            contact_id (int): The id of the contact to be updated. This parameter is optional and defaults to 1 if not provided, but must be greater than 0 when provided.
-            It can also be passed in via path variable using /{contact_id}. If it's passed in via path variable, it will override any value that was passed into this parameter directly.
-
-    :param body: ContactFavoriteModel: Get the body of the request
-    :param contact_id: int: Get the id of the contact to be updated
-    :param db: Session: Get the database session
-    :param current_user: User: Get the current user from the database
-    :return: A contact object
-    :doc-author: Trelent
-    """
     contact = await repository_contacts.set_favorite(current_user, contact_id, body, db)
     if contact is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not Found")

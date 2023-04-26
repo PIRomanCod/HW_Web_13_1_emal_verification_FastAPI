@@ -22,8 +22,9 @@ In this homework, we continue to refine the REST API application from homework 1
 
 # Implemented additional task:
 - Implemented a caching mechanism using a Redis database. Cache the current user during authorization;
-- password reset mechanism for the REST API application
-           (password recovery process:
+
+# Not implemented a password reset mechanism for the REST API application
+      (password recovery process:
 
          - The user requests a password reset by entering their email address in the password reset form.
          - FastAPI generates a unique password reset token and sends an email with a password reset link to the user's email address. The link enables the password reset token as a parameter.
